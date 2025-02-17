@@ -15,7 +15,6 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/robowealth-mutual-fund/finance-go/form"
 	restyModel "github.com/robowealth-mutual-fund/finance-go/models/resty"
-	//restyRepository "github.com/robowealth-mutual-fund/finance-go/resty"
 )
 
 // Printfer is an interface to be implemented by Logger.
@@ -304,7 +303,6 @@ func (s *yahooConfiguration) Call(path string, form *form.Values, ctx *context.C
 		}
 	}
 
-	//_ = s.restyRepository.Get(req.Host, path, header, nil, nil, nil)
 	if err := s.RequestWithJSON(*ctx, &restyModel.Request{
 		Header: header,
 		Host:   req.Host,
@@ -313,13 +311,6 @@ func (s *yahooConfiguration) Call(path string, form *form.Values, ctx *context.C
 	}, v); err != nil {
 		return err
 	}
-	//sss := s.RestyClient.set
-	//Logger.Printf(req2)
-	//log.Printf(req)
-
-	//if err := s.do(req, v); err != nil {
-	//	return err
-	//}
 
 	return nil
 }
@@ -335,7 +326,6 @@ func (s *BackendConfiguration) Call(path string, form *form.Values, ctx *context
 	if err != nil {
 		return err
 	}
-	//sss := s.res
 
 	if err := s.do(req, v); err != nil {
 		return err

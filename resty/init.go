@@ -10,12 +10,3 @@ import (
 type Repository struct {
 	restyClient *httpClient.Client
 }
-
-//func New(
-//
-//	restyClient *httpClient.Client,
-//) Interface {
-//	return &Repository{
-//		restyClient: restyClient,
-//	}
-//}

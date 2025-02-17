@@ -1,11 +1,11 @@
 package resty
 
 import (
-	"github.com/robowealth-mutual-fund/finance-go/models/resty"
-	//"account-service/internals/models/v2/resty"
 	"context"
 	"fmt"
 	"net/http"
+
+	"github.com/robowealth-mutual-fund/finance-go/models/resty"
 
 	jsoniter "github.com/json-iterator/go"
 	"github.com/pkg/errors"

@@ -19,7 +19,6 @@ func (c *Client) RequestWithJSON(
 		SetBaseURL(request.Host).
 		SetTimeout(time.Duration(300) * time.Second).
 		R().
-		//SetContext(*ctx).
 		ForceContentType("application/json").
 		SetHeaders(request.Header).
 		SetBody(request.Body)
