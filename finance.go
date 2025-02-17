@@ -125,7 +125,7 @@ func NewBackends(httpClient *http.Client, client *resty.Client) *Backends {
 }
 
 // GetBackend returns the currently used backend in the binding.
-func GetBackend(backend SupportedBackend, client *resty.Client) Backend {
+func GetBackend(backend SupportedBackend) Backend {
 	switch backend {
 	case YFinBackend:
 		backends.mu.RLock()

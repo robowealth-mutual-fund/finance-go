@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 
-	restyClient "github.com/go-resty/resty/v2"
 	finance "github.com/robowealth-mutual-fund/finance-go"
 	"github.com/robowealth-mutual-fund/finance-go/datetime"
 	form "github.com/robowealth-mutual-fund/finance-go/form"
@@ -17,7 +16,7 @@ type Client struct {
 }
 
 func getC() Client {
-	return Client{finance.GetBackend(finance.YFinBackend, &restyClient.Client{})}
+	return Client{finance.GetBackend(finance.YFinBackend)}
 }
 
 // Params carries a context and chart information.
