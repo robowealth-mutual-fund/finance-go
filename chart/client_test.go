@@ -1,6 +1,7 @@
 package chart
 
 import (
+	"fmt"
 	"testing"
 
 	tests "github.com/piquette/finance-go/testing"
@@ -11,6 +12,7 @@ func TestGetEquityChart(t *testing.T) {
 	p := &Params{Symbol: tests.TestEquitySymbol}
 	iter := Get(p)
 	assert.True(t, iter.Next())
+	fmt.Println("test")
 }
 
 func TestGetETFChart(t *testing.T) {
