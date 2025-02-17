@@ -23,7 +23,7 @@ func main() {
 	// Basic options example.
 	// --------------------
 	{
-		fmt.Println("Options stradle example\n====================")
+		fmt.Println("Options stradle example\n==================== test")
 		fmt.Println()
 		iter := options.GetStraddle("AAPL")
 
