@@ -25,6 +25,7 @@ type Params struct {
 	// quote is requested.
 	Symbols []string `form:"-"`
 	sym     string   `form:"symbols"`
+	
 }
 
 // Iter is an iterator for a list of quotes.
