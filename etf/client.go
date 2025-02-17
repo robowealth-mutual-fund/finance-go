@@ -4,9 +4,11 @@ import (
 	"context"
 	"strings"
 
-	finance "github.com/piquette/finance-go"
-	form "github.com/piquette/finance-go/form"
-	"github.com/piquette/finance-go/iter"
+	finance "github.com/robowealth-mutual-fund/finance-go"
+	form "github.com/robowealth-mutual-fund/finance-go/form"
+	"github.com/robowealth-mutual-fund/finance-go/iter"
+	//restyRepository "github.com/robowealth-mutual-fund/finance-go/resty"
+	restyClient "github.com/go-resty/resty/v2"
 )
 
 // Client is used to invoke quote APIs.
@@ -15,7 +17,7 @@ type Client struct {
 }
 
 func getC() Client {
-	return Client{finance.GetBackend(finance.YFinBackend)}
+	return Client{finance.GetBackend(finance.YFinBackend, &restyClient.Client{})}
 }
 
 // Params carries a context and symbols information.

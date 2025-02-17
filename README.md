@@ -1,6 +1,6 @@
 # finance-go
 
-[![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/piquette/finance-go) [![Build Status](https://travis-ci.org/piquette/finance-go.svg?branch=master)](https://travis-ci.org/piquette/finance-go) [![Coverage Status](https://coveralls.io/repos/github/piquette/finance-go/badge.svg?branch=master)](https://coveralls.io/github/piquette/finance-go?branch=master)
+[![GoDoc](http://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/robowealth-mutual-fund/finance-go) [![Build Status](https://travis-ci.org/piquette/finance-go.svg?branch=master)](https://travis-ci.org/piquette/finance-go) [![Coverage Status](https://coveralls.io/repos/github/piquette/finance-go/badge.svg?branch=master)](https://coveralls.io/github/piquette/finance-go?branch=master)
 
 ## Summary
 
@@ -35,7 +35,7 @@ For now, for details on all the functionality in this library, see the [GoDoc][g
 This project supports modules and Go 1.13+. Add `finance-go` to your own project the usual way -
 
 ```sh
-go get github.com/piquette/finance-go
+go get github.com/robowealth-mutual-fund/finance-go
 ```
 
 ## Usage example
@@ -132,10 +132,10 @@ pull request][pulls]. Also please email or tweet me as needed.
 - Yahoo changes their finance APIs without warning, which is their right to do so. However, its annoying and leads to some instability in this project..
 - Big shoutout to Stripe and the team working on the [stripe-go][stripe] project, I took a lot of library design / implementation hints from them.
 
-[godoc]: http://godoc.org/github.com/piquette/finance-go
-[issues]: https://github.com/piquette/finance-go/issues/new
+[godoc]: http://godoc.org/github.com/robowealth-mutual-fund/finance-go
+[issues]: https://github.com/robowealth-mutual-fund/finance-go/issues/new
 [qtrn]: https://github.com/piquette/qtrn
-[pulls]: https://github.com/piquette/finance-go/pulls
+[pulls]: https://github.com/robowealth-mutual-fund/finance-go/pulls
 [finance-mock]: https://github.com/piquette/finance-mock
 [stripe]: https://github.com/stripe/stripe-go
 [api-docs]: https://piquette.io/projects/finance-go/

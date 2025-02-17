@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 
-	finance "github.com/piquette/finance-go"
-	"github.com/piquette/finance-go/datetime"
-	form "github.com/piquette/finance-go/form"
-	"github.com/piquette/finance-go/iter"
+	restyClient "github.com/go-resty/resty/v2"
+	finance "github.com/robowealth-mutual-fund/finance-go"
+	"github.com/robowealth-mutual-fund/finance-go/datetime"
+	form "github.com/robowealth-mutual-fund/finance-go/form"
+	"github.com/robowealth-mutual-fund/finance-go/iter"
 )
 
 // Client is used to invoke options APIs.
@@ -16,7 +17,7 @@ type Client struct {
 }
 
 func getC() Client {
-	return Client{finance.GetBackend(finance.YFinBackend)}
+	return Client{finance.GetBackend(finance.YFinBackend, &restyClient.Client{})}
 }
 
 // Params carries a context and chart information.
@@ -134,6 +135,8 @@ type response struct {
 		Error   *finance.YfinError `json:"error"`
 	} `json:"optionChain"`
 }
+
+type RawMessage []byte
 
 // result is an umbrella struct for options information for a specified underlying symbol.
 type result struct {

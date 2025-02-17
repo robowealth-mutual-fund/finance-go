@@ -3,17 +3,17 @@ package main
 import (
 	"fmt"
 
-	"github.com/piquette/finance-go/chart"
-	"github.com/piquette/finance-go/crypto"
-	"github.com/piquette/finance-go/datetime"
-	"github.com/piquette/finance-go/equity"
-	"github.com/piquette/finance-go/etf"
-	"github.com/piquette/finance-go/forex"
-	"github.com/piquette/finance-go/future"
-	"github.com/piquette/finance-go/index"
-	"github.com/piquette/finance-go/mutualfund"
-	"github.com/piquette/finance-go/options"
-	"github.com/piquette/finance-go/quote"
+	"github.com/robowealth-mutual-fund/finance-go/chart"
+	"github.com/robowealth-mutual-fund/finance-go/crypto"
+	"github.com/robowealth-mutual-fund/finance-go/datetime"
+	"github.com/robowealth-mutual-fund/finance-go/equity"
+	"github.com/robowealth-mutual-fund/finance-go/etf"
+	"github.com/robowealth-mutual-fund/finance-go/forex"
+	"github.com/robowealth-mutual-fund/finance-go/future"
+	"github.com/robowealth-mutual-fund/finance-go/index"
+	"github.com/robowealth-mutual-fund/finance-go/mutualfund"
+	"github.com/robowealth-mutual-fund/finance-go/options"
+	"github.com/robowealth-mutual-fund/finance-go/quote"
 )
 
 // This file lists several usage examples of this library
@@ -159,7 +159,7 @@ func main() {
 	{
 		fmt.Println("Index example\n====================")
 		fmt.Println()
-		q, err := index.Get("^DJI")
+		q, err := index.Get("^GSPC")
 
 		if err != nil {
 			fmt.Println(err)
