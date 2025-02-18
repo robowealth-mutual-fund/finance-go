@@ -2,8 +2,8 @@ package finance
 
 import (
 	"context"
-	"encoding/json"
 
+	json "github.com/bytedance/sonic"
 	"github.com/shopspring/decimal"
 )
 

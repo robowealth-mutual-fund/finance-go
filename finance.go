@@ -2,7 +2,7 @@ package finance
 
 import (
 	"context"
-	"encoding/json"
+	"errors"
 	"io"
 	"log"
 	"net/http"
@@ -11,7 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/piquette/finance-go/form"
+	json "github.com/bytedance/sonic"
+	"github.com/go-resty/resty/v2"
+	"github.com/robowealth-mutual-fund/finance-go/form"
+	restyModel "github.com/robowealth-mutual-fund/finance-go/models/resty"
 )
 
 // Printfer is an interface to be implemented by Logger.
@@ -77,9 +80,10 @@ type Backends struct {
 
 // BackendConfiguration is the internal implementation for making HTTP calls.
 type BackendConfiguration struct {
-	Type       SupportedBackend
-	URL        string
-	HTTPClient *http.Client
+	Type        SupportedBackend
+	URL         string
+	HTTPClient  *http.Client
+	restyClient *resty.Client
 }
 
 // yahooConfiguration is a specialization that includes a crumb and cookies for the yahoo API
@@ -105,16 +109,16 @@ func SetHTTPClient(client *http.Client) {
 
 // NewBackends creates a new set of backends with the given HTTP client. You
 // should only need to use this for testing purposes or on App Engine.
-func NewBackends(httpClient *http.Client) *Backends {
+func NewBackends(httpClient *http.Client, client *resty.Client) *Backends {
 	return &Backends{
 		YFin: &yahooConfiguration{
-			BackendConfiguration{YFinBackend, YFinURL, httpClient},
+			BackendConfiguration{YFinBackend, YFinURL, httpClient, resty.New()},
 			time.Time{},
 			"",
 			"",
 		},
 		Bats: &BackendConfiguration{
-			BATSBackend, BATSURL, httpClient,
+			BATSBackend, BATSURL, httpClient, resty.New(),
 		},
 	}
 }
@@ -132,7 +136,7 @@ func GetBackend(backend SupportedBackend) Backend {
 		backends.mu.Lock()
 		defer backends.mu.Unlock()
 		backends.YFin = &yahooConfiguration{
-			BackendConfiguration{YFinBackend, YFinURL, httpClient},
+			BackendConfiguration{YFinBackend, YFinURL, httpClient, resty.New()},
 			time.Time{},
 			"",
 			"",
@@ -147,7 +151,7 @@ func GetBackend(backend SupportedBackend) Backend {
 		}
 		backends.mu.Lock()
 		defer backends.mu.Unlock()
-		backends.Bats = &BackendConfiguration{backend, batsURL, httpClient}
+		backends.Bats = &BackendConfiguration{backend, batsURL, httpClient, resty.New()}
 		return backends.Bats
 	}
 
@@ -292,8 +296,19 @@ func (s *yahooConfiguration) Call(path string, form *form.Values, ctx *context.C
 	if err != nil {
 		return err
 	}
+	header := make(map[string]string)
+	for key, values := range req.Header {
+		if len(values) > 0 {
+			header[key] = values[0]
+		}
+	}
 
-	if err := s.do(req, v); err != nil {
+	if err := s.RequestWithJSON(*ctx, &restyModel.Request{
+		Header: header,
+		Host:   req.Host,
+		Method: "GET",
+		Path:   path,
+	}, v); err != nil {
 		return err
 	}
 
@@ -411,6 +426,57 @@ func (s *BackendConfiguration) do(req *http.Request, v interface{}) error {
 
 	if v != nil {
 		return json.Unmarshal(resBody, v)
+	}
+
+	return nil
+}
+
+func (c *BackendConfiguration) RequestWithJSON(
+	ctx context.Context,
+	request *restyModel.Request,
+	v interface{},
+) error {
+	var (
+		response *resty.Response
+		err      error
+	)
+	client := c.restyClient.
+		SetBaseURL("https://query1.finance.yahoo.com/").
+		SetTimeout(time.Duration(300) * time.Second).
+		R().
+		SetContext(ctx).
+		ForceContentType("application/json").
+		SetHeaders(request.Header).
+		SetBody(request.Body)
+
+	if request.PathParams != nil {
+		client.SetPathParams(request.PathParams)
+	}
+
+	if request.QueryParams != nil {
+		client.SetQueryParams(request.QueryParams)
+	}
+
+	switch request.Method {
+	case resty.MethodGet:
+		response, err = client.Get(request.Path)
+	case resty.MethodPost:
+		response, err = client.Post(request.Path)
+	case resty.MethodPut:
+		response, err = client.Put(request.Path)
+	case resty.MethodPatch:
+		response, err = client.Patch(request.Path)
+	case resty.MethodDelete:
+		response, err = client.Delete(request.Path)
+	default:
+		return errors.New("method not match")
+	}
+	if err != nil {
+		return err
+	}
+
+	if v != nil {
+		return json.Unmarshal(response.Body(), v)
 	}
 
 	return nil

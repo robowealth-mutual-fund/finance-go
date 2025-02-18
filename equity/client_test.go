@@ -3,8 +3,8 @@ package equity
 import (
 	"testing"
 
-	finance "github.com/piquette/finance-go"
-	tests "github.com/piquette/finance-go/testing"
+	finance "github.com/robowealth-mutual-fund/finance-go"
+	tests "github.com/robowealth-mutual-fund/finance-go/testing"
 	"github.com/stretchr/testify/assert"
 )
 
