@@ -1,7 +1,6 @@
 module github.com/robowealth-mutual-fund/finance-go
 
 go 1.23
-
 require (
 	github.com/bytedance/sonic v1.12.8
 	github.com/go-resty/resty/v2 v2.11.0
@@ -22,6 +21,6 @@ require (
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
-	golang.org/x/net v0.33.0 // indirect
+	golang.org/x/net v0.36.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
