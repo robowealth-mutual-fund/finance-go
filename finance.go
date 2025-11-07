@@ -3,9 +3,12 @@ package finance
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"net/http/cookiejar"
+	"net/url"
 	"os"
 	"strings"
 	"sync"
@@ -169,55 +172,39 @@ func SetBackend(backend SupportedBackend, b Backend) {
 }
 
 func fetchCookies() (string, time.Time, error) {
-	client := http.Client{}
-	request, err := http.NewRequest("GET", cookieURL, nil)
-	if err != nil {
-		return "", time.Time{}, err
+	jar, _ := cookiejar.New(nil)
+	client := &http.Client{Jar: jar, Timeout: 20 * time.Second}
+
+	consentURL := "https://guce.yahoo.com/consent?agree=1&done=https://login.yahoo.com"
+	if _, err := client.Get(consentURL); err != nil {
+		return "", time.Time{}, fmt.Errorf("consent step failed: %w", err)
 	}
 
-	request.Header = http.Header{
-		"Accept":                   {"*/*"},
-		"Accept-Encoding":          {"gzip, deflate, br"},
-		"Accept-Language":          {"en-US,en;q=0.5"},
-		"Connection":               {"keep-alive"},
-		"Host":                     {"login.yahoo.com"},
-		"Sec-Fetch-Dest":           {"document"},
-		"Sec-Fetch-Mode":           {"navigate"},
-		"Sec-Fetch-Site":           {"none"},
-		"Sec-Fetch-User":           {"?1"},
-		"TE":                       {"trailers"},
-		"Update-Insecure-Requests": {"1"},
-		"User-Agent":               {userAgent},
+	req, _ := http.NewRequest("GET", "https://login.yahoo.com", nil)
+	req.Header.Set("User-Agent", userAgent)
+
+	if _, err := client.Do(req); err != nil {
+		return "", time.Time{}, fmt.Errorf("login.yahoo.com failed: %w", err)
 	}
 
-	response, err := client.Do(request)
-	if err != nil {
-		return "", time.Time{}, err
+	u, _ := url.Parse("https://query1.finance.yahoo.com")
+	cookies := jar.Cookies(u)
+
+	if len(cookies) == 0 {
+		return "", time.Time{}, fmt.Errorf("still no cookies after consent; check redirects")
 	}
-	defer response.Body.Close()
 
-	var result string
-	// create a variable expiry that is ten years in the future
-	var expiry = time.Now().AddDate(10, 0, 0)
-
-	for _, cookie := range response.Cookies() {
-
-		if cookie.MaxAge <= 0 {
-			continue
+	var b strings.Builder
+	expiry := time.Now().Add(12 * time.Hour)
+	for i, c := range cookies {
+		if i > 0 {
+			b.WriteString("; ")
 		}
-
-		cookieExpiry := time.Now().Add(time.Duration(cookie.MaxAge) * time.Second)
-
-		if cookie.Name != "AS" {
-			result += cookie.Name + "=" + cookie.Value + "; "
-			// set expiry to the latest cookie expiry if smaller than the current expiry
-			if cookie.Expires.Before(cookieExpiry) {
-				expiry = cookieExpiry
-			}
-		}
+		b.WriteString(c.Name)
+		b.WriteString("=")
+		b.WriteString(c.Value)
 	}
-	result = strings.TrimSuffix(result, "; ")
-	return result, expiry, nil
+	return b.String(), expiry, nil
 }
 
 func fetchCrumb(cookies string) (string, error) {
